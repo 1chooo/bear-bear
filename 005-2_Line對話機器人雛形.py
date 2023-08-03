@@ -47,8 +47,9 @@ from linebot.exceptions import (
 
 # %%
 # 生成實體物件
-line_bot_api = LineBotApi("1JzmI54EA4tmq1F3JabNlP06PN8eayE2vKLryh6MDZBUsnTp/EgZDdTTZ4R6vTOC0N0bHd6jIatZGunXFPA/w+rZBjkdyHMkHx/veUb+KID4vsOkxlER8x7ZDtRTmfzkn5o+TRuub9/12j5lpfQi8wdB04t89/1O/w1cDnyilFU=")
-handler = WebhookHandler("a00a452f2b4025a7d0c4e12f2181e076")
+import config
+line_bot_api = LineBotApi(config.line_bot_api)
+handler = WebhookHandler(config.handler)
 
 # %%
 '''
