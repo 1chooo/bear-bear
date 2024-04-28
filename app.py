@@ -5,29 +5,25 @@ Author: @1chooo(Hugo ChunHo Lin)
 Version: v0.0.1
 '''
 
-# Import necessary packages
 import json
-import math
+# Import necessary packages
+import os
 import urllib.request
+
 import boto3
+# Load configuration settings
 import pandas as pd
-from flask import Flask, request, abort
+from flask import Flask, abort, request
 from flask_ngrok import run_with_ngrok
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import (
-    FollowEvent, ImageMessage, MessageEvent, TextMessage,
-    TextSendMessage, ImageSendMessage, ImagemapSendMessage,
-    LocationSendMessage, FlexSendMessage, VideoSendMessage,
-    StickerSendMessage, AudioSendMessage, TemplateSendMessage
-)
-from linebot.models.template import (
-    ButtonsTemplate, CarouselTemplate, ConfirmTemplate,
-    ImageCarouselTemplate
-)
+from linebot.models import (AudioSendMessage, FlexSendMessage, FollowEvent,
+                            ImagemapSendMessage, ImageMessage,
+                            ImageSendMessage, LocationSendMessage,
+                            MessageEvent, StickerSendMessage,
+                            TemplateSendMessage, TextMessage, TextSendMessage,
+                            VideoSendMessage)
 
-# Load configuration settings
-import config
 
 def detect_json_array_to_new_message_array(jsonObjectString):
     jsonObject = json.loads(jsonObjectString)
@@ -97,15 +93,10 @@ def show_custom_labels(model,photo, min_confidence):
             ProjectVersionArn=model
         )
 
-    result = ' '
     if len(response['CustomLabels'])==0:
         result="這個AI模型無法辨認你想知道的事情"
     else:
         result = response['CustomLabels'][0]
-        # for custom_label in response['CustomLabels']:
-        #   result = result + ' ' + custom_label['Name'] 
-        # for custom_label in response['CustomLabels']:
-        #   result = result + ' ' + custom_label['Name'] 
 
     print(result)
     return result
@@ -113,15 +104,16 @@ def show_custom_labels(model,photo, min_confidence):
 app = Flask(__name__)
 run_with_ngrok(app)
 
+
 # Set up LineBot API and handler
-line_bot_api = LineBotApi(config.line_bot_api)
-handler = WebhookHandler(config.handler)
-client_aws_access_key_id = config.client_aws_access_key_id
-client_aws_secret_access_key = config.client_aws_secret_access_key
-client_aws_session_token = config.client_aws_session_token
-client_bucket_name = config.client_bucket_name
-client_region_name = config.client_region_name
-model_arn = config.model_arn
+line_bot_api = LineBotApi(os.getenv("your_line_bot_api"))
+handler = WebhookHandler(os.getenv("your_handler"))
+client_aws_access_key_id = os.getenv("your_client_aws_access_key_id")
+client_aws_secret_access_key = os.getenv("your_client_aws_secret_access_key")
+client_aws_session_token = os.getenv("your_client_aws_session_token")
+client_bucket_name = os.getenv("your_client_bucket_name")
+client_region_name = os.getenv("your_client_region_name")
+model_arn = os.getenv("your_model_arn")
 plot_content = pd.read_excel("bearbear.xlsx")
 
 s3_client = boto3.client(
