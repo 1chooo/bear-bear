@@ -7,13 +7,8 @@ Version: v0.0.1
 
 import json
 import sys
-from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
-    TemplateSendMessage, QuickReply, QuickReplyButton,
-    MessageAction, PostbackAction, ImagemapSendMessage,
-    ImageSendMessage, StickerSendMessage, AudioSendMessage,
-    LocationSendMessage, FlexSendMessage, VideoSendMessage,
-)
+
+from linebot.models import TextSendMessage
 
 # Define message types
 message_types = {
@@ -72,25 +67,20 @@ def get_input(prompt):
 
 def get_date_time(mode):
     if mode == 0:
-        print("========請輸入日期（YYYY-MM-DD）==========")
-        date = get_input()
+        date = get_input("========請輸入日期（YYYY-MM-DD）==========")
         return date
     elif mode == 1:
-        print("========請輸入時間（H:M）Max: 23:59 Min: 00:00 ==========")
-        time = get_input()
+        time = get_input("========請輸入時間（H:M）Max: 23:59 Min: 00:00 ==========")
         return time
     elif mode == 2:
-        print("========請輸入日期（YYYY-MM-DD）==========")
-        date = get_input()
-        print("========請輸入時間（H:M）Max: 23:59 Min: 00:00==========")
-        time = get_input()
+        date = get_input("========請輸入日期（YYYY-MM-DD）==========")
+        time = get_input("========請輸入時間（H:M）Max: 23:59 Min: 00:00==========")
         return date + 't' + time
 
 def main():
-    print("================1.輸入需要的quickReplyAction數量==================")
-    items_count = int(get_input())
+    items_count = int(get_input("================1.輸入需要的quickReplyAction數量=================="))
     if items_count > 13:
-        print("ERROR:一個message一次最多只能有13個任何種類的quickReplyAction")
+        print("ERROR: 一個 message 一次最多只能有 13 個任何種類的 quickReplyAction")
         return
     
     reply_message = {
@@ -100,27 +90,22 @@ def main():
     }
 
     for i in range(items_count):
-        print(f"========請選擇第 {i+1} 個quickReply action的種類代號==========")
         print(json.dumps(message_types, indent=2))
-        action_number = int(get_input())
+        action_number = int(get_input(f"========請選擇第 {i+1} 個quickReply action的種類代號=========="))
         action_type = message_types[action_number]
 
         action_dict = sample_messages[action_type]
 
         print(f"=========請依指示輸入{action_dict['type']} action 的參數==========")
        
-        print(f"========輸入 {action_dict['type']} action的 label==========")
-        action_dict['label'] = get_input()
+        action_dict['label'] = get_input(f"========輸入 {action_dict['type']} action的 label==========")
 
         if action_number == 0:
-            print(f"========輸入 {action_dict['type']} action的 text==========")
-            action_dict['text'] = get_input()
+            action_dict['text'] = get_input(f"========輸入 {action_dict['type']} action的 text==========")
 
         elif action_number == 1:
-            print(f"========輸入 {action_dict['type']} action的 text==========")
-            action_dict['text'] = get_input()
-            print(f"========輸入 {action_dict['type']} action的 data==========")
-            action_dict['data'] = get_input()
+            action_dict['text'] = get_input(f"========輸入 {action_dict['type']} action的 text==========")
+            action_dict['data'] = get_input(f"========輸入 {action_dict['type']} action的 data==========")
         
         # ... (similar input gathering for other action types)
 
